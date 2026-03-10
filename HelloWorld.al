@@ -13,4 +13,4 @@ pageextension 50100 CustomerListExt extends "Customer List"
         Message('Teste da branch dev');
     end;
 }
-//trigger para pipeline
+//alteração de teste da branch dev01 
