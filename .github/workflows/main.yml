@@ -17,4 +17,4 @@ jobs:
         run: dir
 
       - name: Pipeline concluído
-        run: echo "Pipeline executado com sucesso!"
+        run: echo "Pipeline executado com sucesso! "
