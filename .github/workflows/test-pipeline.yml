@@ -1,0 +1,20 @@
+name: Pipeline Branch Test
+
+on:
+  pull_request:
+    branches: ["test", "dev"]   # Só corre quando houver PR para a branch test
+
+jobs:
+  build:
+    name: Compilação da aplicação (Release)
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Install BcContainerHelper
+        shell: powershell
+        run: |
+          Install-Module BcContainerHelper -Force
+          Import-Module BcContainerHelper
