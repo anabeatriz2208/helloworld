@@ -2,12 +2,25 @@ name: Pipeline Branch Test
 
 on:
   pull_request:
-    branches: ["test"]   # Só corre quando fizeres PR para test
+    branches: ["test"]   # Só corre quando houver PR para a branch test
 
 jobs:
-  check_trigger:
-    name: Verificação inicial
-    runs-on: ubuntu-latest
+  build:
+    name: Compilação da aplicação (Release)
+    runs-on: windows-latest
+
     steps:
-      - name: Mostrar mensagem
-        run: echo "Workflow só corre quando houver PR para a branch test!"
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      # Se for .NET:
+      - name: Instalar .NET SDK estável
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "latest"
+
+      - name: Restaurar pacotes
+        run: dotnet restore
+
+      - name: Compilar em Release
+        run: dotnet build --configuration Release --no-restore
