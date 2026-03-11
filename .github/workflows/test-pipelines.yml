@@ -1,0 +1,21 @@
+name: Pipeline PR para branch test
+
+on:
+  pull_request:
+    branches: ["test"]
+
+permissions:
+  contents: read
+
+env:
+  BC_CONTAINER_NAME: bc-pr-validate
+  BC_COUNTRY: w1
+  BC_TYPE: Sandbox
+
+jobs:
+  test_job:
+    name: Testar trigger
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mostrar mensagem
+        run: echo "O workflow iniciou corretamente!"
