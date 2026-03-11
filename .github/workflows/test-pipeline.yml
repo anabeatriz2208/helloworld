@@ -1,0 +1,13 @@
+name: Pipeline Branch Test
+
+on:
+  pull_request:
+    branches: ["test"]   # Só corre quando fizeres PR para test
+
+jobs:
+  check_trigger:
+    name: Verificação inicial
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mostrar mensagem
+        run: echo "Workflow só corre quando houver PR para a branch test!"
