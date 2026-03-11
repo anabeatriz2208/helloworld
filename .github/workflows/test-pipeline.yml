@@ -2,7 +2,7 @@ name: Pipeline Branch Test
 
 on:
   pull_request:
-    branches: ["test"]   # Só corre quando houver PR para a branch test
+    branches: ["test", "dev"]   # Só corre quando houver PR para a branch test
 
 jobs:
   build:
@@ -13,14 +13,8 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v4
 
-      # Se for .NET:
-      - name: Instalar .NET SDK estável
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "latest"
-
-      - name: Restaurar pacotes
-        run: dotnet restore
-
-      - name: Compilar em Release
-        run: dotnet build --configuration Release --no-restore
+      - name: Install BcContainerHelper
+        shell: powershell
+        run: |
+          Install-Module BcContainerHelper -Force
+          Import-Module BcContainerHelper
