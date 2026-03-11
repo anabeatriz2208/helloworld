@@ -14,4 +14,4 @@ pageextension 50100 CustomerListExt extends "Customer List"
     end;
 }
 //alteração de teste da branch dev01 
-//teste regra1
+//teste regra2
