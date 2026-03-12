@@ -37,6 +37,7 @@ jobs:
           $securePassword = ConvertTo-SecureString $env:BC_PASSWORD -AsPlainText -Force
           $credential = New-Object PSCredential ($env:BC_USERNAME, $securePassword)
           $containerName = "bc-ci"
+          $projectFolder = $env:GITHUB_WORKSPACE
 
           New-BcContainer `
             -accept_eula `
@@ -47,7 +48,8 @@ jobs:
             -updateHosts `
             -includeAL `
             -assignPremiumPlan `
-            -memoryLimit 8G
+            -memoryLimit 8G `
+            -additionalParameters @("--volume=$projectFolder:c:\workspace")
 
       - name: Compile AL App
         shell: pwsh
