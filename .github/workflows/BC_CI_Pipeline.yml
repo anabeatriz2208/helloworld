@@ -53,15 +53,18 @@ jobs:
             -includeAL `
             -assignPremiumPlan `
             -memoryLimit 8G `
-           -additionalParameters @("--dns=8.8.8.8")
+            -additionalParameters @("--volume=$volume")
+
+          Write-Host $env:GITHUB_WORKSPACE
+           
       - name: Compile AL App
         shell: pwsh
         run: |
 
           Compile-AppInBCContainer `
-            -containerName bc-ci `
-            -appProjectFolder ${{ github.workspace }} `
-            -appOutputFolder ${{ github.workspace }}/output `
+            -containerName $containerName `
+            -appProjectFolder $workspace `
+            -appOutputFolder $workspace/output `
             -failOn error
 
       - name: Publish and Install Extension
@@ -71,7 +74,7 @@ jobs:
           $app = Get-ChildItem ./output/*.app
 
           Publish-BcContainerApp `
-            -containerName bc-ci `
+            -containerName $containerName `
             -appFile $app `
             -sync `
             -install
@@ -81,7 +84,7 @@ jobs:
         run: |
 
           Run-TestsInBcContainer `
-            -containerName bc-ci `
+            -containerName $containerName `
             -credential (Get-Credential) `
             -testSuite DEFAULT
 
