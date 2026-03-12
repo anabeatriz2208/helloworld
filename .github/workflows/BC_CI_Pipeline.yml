@@ -53,8 +53,7 @@ jobs:
             -includeAL `
             -assignPremiumPlan `
             -memoryLimit 8G `
-            -additionalParameters @("--volume=$workspace")
-
+           -additionalParameters @("--dns=8.8.8.8")
       - name: Compile AL App
         shell: pwsh
         run: |
