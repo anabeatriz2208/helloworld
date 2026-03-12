@@ -30,7 +30,12 @@ jobs:
 
       - name: Create BC Docker Container
         shell: pwsh
+        env:
+          BC_USERNAME: ${{ secrets.BC_USERNAME }}
+          BC_PASSWORD: ${{ secrets.BC_PASSWORD }}
         run: |
+          $securePassword = ConvertTo-SecureString $env:BC_PASSWORD -AsPlainText -Force
+          $credential = New-Object PSCredential ($env:BC_USERNAME, $securePassword)
           $containerName = "bc-ci"
 
           New-BcContainer `
@@ -38,6 +43,7 @@ jobs:
             -containerName $containerName `
             -artifactUrl $env:artifactUrl `
             -auth UserPassword `
+            -credential $credential `
             -updateHosts `
             -includeAL `
             -assignPremiumPlan `
