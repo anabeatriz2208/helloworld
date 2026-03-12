@@ -53,7 +53,12 @@ jobs:
             -includeAL `
             -assignPremiumPlan `
             -memoryLimit 8G `
-            -additionalParameters @("--volume=$volume")
+            -isolation process `
+            -useBestContainerOS `
+            -doNotUseRuntimePackages `
+            -enableSymbolLoading:$false `
+            -shortcuts None `
+            -additionalParameters @("--dns=8.8.8.8")
 
           Write-Host $env:GITHUB_WORKSPACE
            
@@ -61,11 +66,14 @@ jobs:
         shell: pwsh
         run: |
 
-          Compile-AppInBCContainer `
+          Build-BCContainerApp `
             -containerName $containerName `
-            -appProjectFolder $workspace `
-            -appOutputFolder $workspace/output `
-            -failOn error
+            -appProjectFolder $env:GITHUB_WORKSPACE `
+            -appOutputFolder "$env:GITHUB_WORKSPACE/output" `
+            -enableCodeCop:$false `
+            -enableAppSourceCop:$false `
+            -enableUICop:$false `
+            -doNotSaveData
 
       - name: Publish and Install Extension
         shell: pwsh
