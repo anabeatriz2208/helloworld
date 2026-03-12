@@ -79,7 +79,7 @@ jobs:
         shell: pwsh
         run: |
 
-          $app = Get-ChildItem ./output/*.app
+          $app = Get-ChildItem $env:GITHUB_WORKSPACE/output/*.app
 
           Publish-BcContainerApp `
             -containerName $containerName `
