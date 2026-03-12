@@ -67,7 +67,7 @@ jobs:
         run: |
 
           Compile-AppInBCContainer `
-            -containerName $containerName `
+            -containerName "bc-ci" `
             -appProjectFolder $env:GITHUB_WORKSPACE `
             -appOutputFolder "$env:GITHUB_WORKSPACE/output" `
             -enableCodeCop:$false `
@@ -81,7 +81,7 @@ jobs:
           $app = Get-ChildItem $env:GITHUB_WORKSPACE/output/*.app
 
           Publish-BcContainerApp `
-            -containerName $containerName `
+            -containerName "bc-ci" `
             -appFile $app `
             -sync `
             -install
@@ -91,7 +91,7 @@ jobs:
         run: |
 
           Run-TestsInBcContainer `
-            -containerName $containerName `
+            -containerName "bc-ci" `
             -credential (Get-Credential) `
             -testSuite DEFAULT
 
