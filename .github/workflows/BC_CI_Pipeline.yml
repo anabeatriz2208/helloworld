@@ -73,6 +73,7 @@ jobs:
                   -enableAppSourceCop:$false `
                   -enableUICop:$false
 
+
       - name: Publish and Install Extension
         shell: pwsh
         run: |
