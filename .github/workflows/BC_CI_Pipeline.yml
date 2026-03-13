@@ -64,14 +64,16 @@ jobs:
       - name: Compile AL App
         shell: pwsh
         run: |
+                 Build-BCContainerApp `
+                    -containerName "bc-ci" `
+                    -appProjectFolder $env:GITHUB_WORKSPACE `
+                    -appOutputFolder "$env:GITHUB_WORKSPACE/output" `
+                    -enableCodeCop:$false `
+                    -enableAppSourceCop:$false `
+                    -enablePerTenantExtensionCop:$false `
+                    -enableUICop:$false `
+                    -doNotSaveData
 
-          Compile-AppInBCContainer `
-            -containerName "bc-ci" `
-            -appProjectFolder $env:GITHUB_WORKSPACE `
-            -appOutputFolder "$env:GITHUB_WORKSPACE/output" `
-            -enableCodeCop:$false `
-            -enableAppSourceCop:$false `
-            -enableUICop:$false
 
       - name: Publish and Install Extension
         shell: pwsh
