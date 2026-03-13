@@ -57,8 +57,7 @@ jobs:
             -useBestContainerOS `
             -doNotUseRuntimePackages `
             -enableSymbolLoading:$false `
-            -shortcuts None `
-            -additionalParameters @("--dns=8.8.8.8")
+            -shortcuts None
 
           Write-Host $env:GITHUB_WORKSPACE
            
