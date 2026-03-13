@@ -1,0 +1,100 @@
+name: BC CI Pipeline
+
+on:
+  pull_request:
+    branches: [ dev ]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+
+  build:
+    if: github.event.review.state == 'approved' || github.event_name == 'pull_request'
+    runs-on: windows-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install BcContainerHelper
+        shell: pwsh
+        run: |
+          Install-Module BcContainerHelper -Force
+
+      - name: Determine BC Artifact
+        shell: pwsh
+        run: |
+          $artifactUrl = Get-BCArtifactUrl -type Sandbox -country w1 -select Latest
+          echo "artifactUrl=$artifactUrl" >> $env:GITHUB_ENV
+
+      - name: Create BC Docker Container
+        shell: pwsh
+        env:
+          BC_USERNAME: ${{ secrets.BC_USERNAME }}
+          BC_PASSWORD: ${{ secrets.BC_PASSWORD }}
+        run: |
+          $securePassword = ConvertTo-SecureString $env:BC_PASSWORD -AsPlainText -Force
+          $credential = New-Object PSCredential ($env:BC_USERNAME, $securePassword)
+          $containerName = "bc-ci"
+          $projectFolder = $env:GITHUB_WORKSPACE
+          $workspace = $env:GITHUB_WORKSPACE
+          $volume = "$workspace:c:\workspace"
+
+          Write-Host $env:GITHUB_WORKSPACE
+
+          New-BcContainer `
+            -accept_eula `
+            -containerName $containerName `
+            -artifactUrl $env:artifactUrl `
+            -auth UserPassword `
+            -credential $credential `
+            -updateHosts `
+            -includeAL `
+            -assignPremiumPlan `
+            -memoryLimit 8G `
+            -isolation process `
+            -useBestContainerOS `
+            -doNotUseRuntimePackages `
+            -enableSymbolLoading:$false `
+            -shortcuts None
+
+          Write-Host $env:GITHUB_WORKSPACE
+           
+      - name: Compile AL App
+        shell: pwsh
+        run: |           
+          Compile-AppInBCContainer `
+            -containerName "bc-ci" `
+            -appProjectFolder $env:GITHUB_WORKSPACE `
+            -appOutputFolder "$env:GITHUB_WORKSPACE/output" `
+            -enableCodeCop:$false `
+            -enableAppSourceCop:$false `
+            -enableUICop:$false
+
+      - name: Publish and Install Extension
+        shell: pwsh
+        run: |
+
+          $app = Get-ChildItem $env:GITHUB_WORKSPACE/output/*.app
+
+          Publish-BcContainerApp `
+            -containerName "bc-ci" `
+            -appFile $app `
+            -sync `
+            -install
+
+      - name: Run Tests
+        shell: pwsh
+        run: |
+
+          Run-TestsInBcContainer `
+            -containerName "bc-ci" `
+            -credential (Get-Credential) `
+            -testSuite DEFAULT
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bc-extension
+          path: output/*.app
