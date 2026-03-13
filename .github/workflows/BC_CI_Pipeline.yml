@@ -65,13 +65,13 @@ jobs:
         shell: pwsh
         run: |
               
-           Compile-AppInBCContainer `
-            -containerName "bc-ci" `
-            -appProjectFolder $env:GITHUB_WORKSPACE `
-            -appOutputFolder "$env:GITHUB_WORKSPACE/output" `
-            -enableCodeCop:$false `
-            -enableAppSourceCop:$false `
-            -enableUICop:$false
+               Compile-AppInBCContainer `
+                  -containerName "bc-ci" `
+                  -appProjectFolder $env:GITHUB_WORKSPACE `
+                  -appOutputFolder "$env:GITHUB_WORKSPACE/output" `
+                  -enableCodeCop:$false `
+                  -enableAppSourceCop:$false `
+                  -enableUICop:$false
 
       - name: Publish and Install Extension
         shell: pwsh
